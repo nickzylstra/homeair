@@ -80,7 +80,41 @@ function App() {
     <div className="App">
       <CurrentStatus />
       <table>
-        {processedPoints.map((p) => <tr>{JSON.stringify(p)}</tr>)}
+        <thead>
+          <td>
+            Timestamp
+          </td>
+          <td>
+            Temp (F)
+          </td>
+          <td>
+            Humidity (%)
+          </td>
+          <td>
+            AQI (US EPA 2.5 with US EPA CF)
+          </td>
+        </thead>
+        <tbody />
+        {
+          processedPoints.map(({
+            tsUTC, tempF, relHumidityPerc, AQI,
+          }) => (
+              <tr>
+                <td>
+                  {tsUTC}
+                </td>
+                <td>
+                  {tempF}
+                </td>
+                <td>
+                  {relHumidityPerc}
+                </td>
+                <td>
+                  {AQI}
+                </td>
+              </tr>
+            ))
+        }
       </table>
     </div>
   );
