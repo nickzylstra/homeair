@@ -52,6 +52,10 @@ export function convertPM25toAQI(PM25: number, RH: number) {
   return PM25toAQI(PurpleAirPM25toUSEPAPM25(PM25, RH));
 }
 
+export function correctTemp(tempF: number) {
+  return Math.round(10 * (tempF - 10.2)) / 10;
+}
+
 export function getAPIStart(date?: Date, daysSpan = 7) {
   return subDays(date ?? new Date(), daysSpan)
     .toISOString()
