@@ -56,7 +56,7 @@ export function correctTemp(tempF: number) {
   return Math.round(10 * (tempF - 10.2)) / 10;
 }
 
-export function getAPIStart(date?: Date, daysSpan = 7) {
+export function getAPIStart(date?: Date, daysSpan = 5) {
   return subDays(date ?? new Date(), daysSpan)
     .toISOString()
     .replace('T', ' ')

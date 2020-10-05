@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React, { useState, useEffect } from 'react';
 import querystring from 'querystring';
 import './App.css';
@@ -54,13 +54,12 @@ function App() {
         AQI: convertPM25toAQI(rawPM25, RH),
         tsUTC: point.created_at,
       };
-    })
-    .sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1));
+    });
 
   return (
     <div className="App">
-      <CurrentStatus />
       <Chart data={processedPoints} />
+      <CurrentStatus />
       <table>
         <thead>
           <td>
@@ -78,24 +77,27 @@ function App() {
         </thead>
         <tbody />
         {
-          processedPoints.map(({
-            tsUTC, tempF, relHumidityPerc, AQI,
-          }) => (
-              <tr>
-                <td>
-                  {new Date(tsUTC).toLocaleString()}
-                </td>
-                <td>
-                  {tempF}
-                </td>
-                <td>
-                  {relHumidityPerc}
-                </td>
-                <td>
-                  {AQI}
-                </td>
-              </tr>
-            ))
+          [...processedPoints]
+            .sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1))
+            .slice(0, 50)
+            .map(({
+              tsUTC, tempF, relHumidityPerc, AQI,
+            }) => (
+                <tr>
+                  <td>
+                    {new Date(tsUTC).toLocaleString()}
+                  </td>
+                  <td>
+                    {tempF}
+                  </td>
+                  <td>
+                    {relHumidityPerc}
+                  </td>
+                  <td>
+                    {AQI}
+                  </td>
+                </tr>
+              ))
         }
       </table>
     </div>
