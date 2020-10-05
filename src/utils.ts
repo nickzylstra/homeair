@@ -1,26 +1,27 @@
-// https://cfpub.epa.gov/airnow/index.cfm?action=airnow.calculator
+import { subDays } from 'date-fns';
 
-function Linear(
-  AQIhigh: number,
-  AQIlow: number,
-  Conchigh: number,
-  Conclow: number,
-  Concentration: number,
-) {
-  const a = ((Concentration - Conclow) / (Conchigh - Conclow)) * (AQIhigh - AQIlow) + AQIlow;
-  return Math.round(a);
-}
-
-// USA EPA AQI Conversion
+// USA EPA AQI Conversion for recommended for wildfire smoke
 // https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC5#11.25/37.8076/-122.3897
 // 0-250 ug/m3 range (>250 may underestimate true PM2.5):
-function convertUSEPA(aqi: number) {
-  // PM2.5 (µg/m³) = 0.534 x PA(cf_1) - 0.0844 x RH + 5.604
+// PM2.5 (µg/m³) = 0.534 x PA(cf_1) - 0.0844 x RH + 5.604
+function PurpleAirPM25toUSEPAPM25(concentration: number, RH: number) {
+  return 0.534 * concentration - 0.0844 * RH + 5.604;
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export function AQIPM25(Concentration: number) {
-  const c = (Math.floor(10 * Concentration)) / 10;
+// https://cfpub.epa.gov/airnow/index.cfm?action=airnow.calculator
+function PM25toAQI(concentration: number) {
+  function Linear(
+    AQIhigh: number,
+    AQIlow: number,
+    Conchigh: number,
+    Conclow: number,
+    Concentration: number,
+  ) {
+    const a = ((Concentration - Conclow) / (Conchigh - Conclow)) * (AQIhigh - AQIlow) + AQIlow;
+    return Math.round(a);
+  }
+
+  const c = (Math.floor(10 * concentration)) / 10;
   if (c >= 0 && c < 12.1) {
     return Linear(50, 0, 12, 0, c);
   }
@@ -43,4 +44,16 @@ export function AQIPM25(Concentration: number) {
     return Linear(500, 401, 500.4, 350.5, c);
   }
   return NaN;
+}
+
+// eslint-disable-next-line import/prefer-default-export
+export function convertPM25toAQI(PM25: number, RH: number) {
+  return PM25toAQI(PurpleAirPM25toUSEPAPM25(PM25, RH));
+}
+
+export function getAPIStart(date?: Date, daysSpan = 7) {
+  return subDays(date ?? new Date(), daysSpan)
+    .toISOString()
+    .replace('T', ' ')
+    .slice(0, -5);
 }

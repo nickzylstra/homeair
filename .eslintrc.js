@@ -26,5 +26,6 @@ module.exports = {
   rules: {
     // not supported yet in Airbnb
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
   },
 };
