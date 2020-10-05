@@ -24,8 +24,10 @@ module.exports = {
     project: './tsconfig.json',
   },
   rules: {
-    // not supported yet in Airbnb
+    // camelcase not supported yet in Airbnb rules
     "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   },
 };

@@ -4,12 +4,12 @@ import { subDays } from 'date-fns';
 // https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC5#11.25/37.8076/-122.3897
 // 0-250 ug/m3 range (>250 may underestimate true PM2.5):
 // PM2.5 (µg/m³) = 0.534 x PA(cf_1) - 0.0844 x RH + 5.604
-function PurpleAirPM25toUSEPAPM25(concentration: number, RH: number) {
-  return 0.534 * concentration - 0.0844 * RH + 5.604;
+function PurpleAirPM25toUSEPAPM25(PM25: number, RH: number) {
+  return 0.534 * PM25 - 0.0844 * RH + 5.604;
 }
 
 // https://cfpub.epa.gov/airnow/index.cfm?action=airnow.calculator
-function PM25toAQI(concentration: number) {
+function PM25toAQI(PM25: number) {
   function Linear(
     AQIhigh: number,
     AQIlow: number,
@@ -17,11 +17,12 @@ function PM25toAQI(concentration: number) {
     Conclow: number,
     Concentration: number,
   ) {
-    const a = ((Concentration - Conclow) / (Conchigh - Conclow)) * (AQIhigh - AQIlow) + AQIlow;
-    return Math.round(a);
+    // from PA API docs: https://docs.google.com/document/d/15ijz94dXJ-YAZLi9iZ_RaBwrZ4KtYeCy08goGBwnbCU/edit
+    const AQI = ((Concentration - Conclow) / (Conchigh - Conclow)) * (AQIhigh - AQIlow) + AQIlow;
+    return Math.round(AQI);
   }
 
-  const c = (Math.floor(10 * concentration)) / 10;
+  const c = (Math.floor(10 * PM25)) / 10;
   if (c >= 0 && c < 12.1) {
     return Linear(50, 0, 12, 0, c);
   }
