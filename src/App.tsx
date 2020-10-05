@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import querystring from 'querystring';
 import './App.css';
+import CurrentStatus from './CurrentStatus';
 import { convertPM25toAQI, getAPIStart } from './utils';
 
 interface ThingSpeakJSON {
@@ -63,20 +64,25 @@ function App() {
     return updatedMap;
   }, {} as ApiPointsToFeed);
 
-  const processedPoints: ProcessedPoint[] = feeds.map((point) => {
-    const RH = parseFloat(point[apiPointsToFeed[APIPoints.REL_HUMIDITY]]);
-    const rawPM25 = parseFloat(point[apiPointsToFeed[APIPoints.PM25]]);
-    return {
-      tempF: parseFloat(point[apiPointsToFeed[APIPoints.TEMP_F]]),
-      relHumidityPerc: RH,
-      AQI: convertPM25toAQI(rawPM25, RH),
-      tsUTC: point.created_at,
-    };
-  });
+  const processedPoints: ProcessedPoint[] = feeds
+    .map((point) => {
+      const RH = parseFloat(point[apiPointsToFeed[APIPoints.REL_HUMIDITY]]);
+      const rawPM25 = parseFloat(point[apiPointsToFeed[APIPoints.PM25]]);
+      return {
+        tempF: parseFloat(point[apiPointsToFeed[APIPoints.TEMP_F]]),
+        relHumidityPerc: RH,
+        AQI: convertPM25toAQI(rawPM25, RH),
+        tsUTC: point.created_at,
+      };
+    })
+    .sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1));
 
   return (
     <div className="App">
-      {JSON.stringify(processedPoints.sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1)))}
+      <CurrentStatus />
+      <table>
+        {processedPoints.map((p) => <tr>{JSON.stringify(p)}</tr>)}
+      </table>
     </div>
   );
 }
