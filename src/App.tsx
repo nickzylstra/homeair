@@ -101,7 +101,7 @@ function App() {
           }) => (
               <tr>
                 <td>
-                  {tsUTC}
+                  {new Date(tsUTC).toLocaleString()}
                 </td>
                 <td>
                   {tempF}
