@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "house-144-237998.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "144x144"
     },
     {
-      "src": "logo512.png",
+      "src": "house-512-237998.png",
       "type": "image/png",
       "sizes": "512x512"
     }
