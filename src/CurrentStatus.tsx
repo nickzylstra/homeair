@@ -2,20 +2,20 @@
 import React, { useEffect } from 'react';
 
 const loadWidgets = () => {
-  const script = document.createElement('script');
-  script.src = 'https://www.purpleair.com/pa.widget.js?key=L1C8TB907ZEZE9TJ&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard';
-  script.id = 'PAWidgetScript';
-  document.body.appendChild(script);
+  const widgetHome = document.createElement('script');
+  widgetHome.src = 'https://www.purpleair.com/pa.widget.js?key=L1C8TB907ZEZE9TJ&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard';
+  widgetHome.id = 'PAWidgetScript';
+  document.body.appendChild(widgetHome);
 
-  const scriptOut1 = document.createElement('script');
-  scriptOut1.src = 'https://www.purpleair.com/pa.widget.js?key=C1VSSQPBP6SE2NZT&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_63513_module_AQI_conversion_C5_average_10_layer_standard';
-  scriptOut1.id = 'PAWidgetScriptOut1';
-  document.body.appendChild(scriptOut1);
+  const widgetNeighbor1 = document.createElement('script');
+  widgetNeighbor1.src = 'https://www.purpleair.com/pa.widget.js?key=IYK4R5V4JG2FZA6T&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard';
+  widgetNeighbor1.id = 'PAWidgetScriptOut1';
+  document.body.appendChild(widgetNeighbor1);
 
-  const scriptOut2 = document.createElement('script');
-  scriptOut2.src = 'https://www.purpleair.com/pa.widget.js?key=EMIMM5D86RP2W9XB&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_62421_module_AQI_conversion_C5_average_10_layer_standard';
-  scriptOut2.id = 'PAWidgetScript2';
-  document.body.appendChild(scriptOut2);
+  const widgetNeighbor2 = document.createElement('script');
+  widgetNeighbor2.src = 'https://www.purpleair.com/pa.widget.js?key=06HYXH8CVBSRS1TU&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_64027_module_AQI_conversion_C5_average_10_layer_standard';
+  widgetNeighbor2.id = 'PAWidgetScript2';
+  document.body.appendChild(widgetNeighbor2);
 };
 
 function CurrentStatus() {
@@ -25,8 +25,8 @@ function CurrentStatus() {
   return (
     <div style={{ display: 'flex' }}>
       <span id="PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_63513_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_62421_module_AQI_conversion_C5_average_10_layer_standard" />
+      <span id="PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard" />
+      <span id="PurpleAirWidget_64027_module_AQI_conversion_C5_average_10_layer_standard" />
     </div>
   );
 }
