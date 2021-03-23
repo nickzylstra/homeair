@@ -62,28 +62,30 @@ function App() {
       <CurrentStatus />
       <table>
         <thead>
-          <td>
-            Timestamp
-          </td>
-          <td>
-            Temp (F)
-          </td>
-          <td>
-            Humidity (%)
-          </td>
-          <td>
-            AQI (US EPA 2.5 with US EPA CF)
-          </td>
+          <tr>
+            <td>
+              Timestamp
+            </td>
+            <td>
+              Temp (F)
+            </td>
+            <td>
+              Humidity (%)
+            </td>
+            <td>
+              AQI (US EPA 2.5 with US EPA CF)
+            </td>
+          </tr>
         </thead>
-        <tbody />
-        {
-          [...processedPoints]
-            .sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1))
-            .slice(0, 50)
-            .map(({
-              tsUTC, tempF, relHumidityPerc, AQI,
-            }) => (
-                <tr>
+        <tbody>
+          {
+            [...processedPoints]
+              .sort((a, b) => (a.tsUTC > b.tsUTC ? -1 : 1))
+              .slice(0, 50)
+              .map(({
+                tsUTC, tempF, relHumidityPerc, AQI,
+              }) => (
+                <tr key={tsUTC}>
                   <td>
                     {new Date(tsUTC).toLocaleString()}
                   </td>
@@ -98,7 +100,8 @@ function App() {
                   </td>
                 </tr>
               ))
-        }
+          }
+        </tbody>
       </table>
     </div>
   );
