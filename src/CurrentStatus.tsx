@@ -26,7 +26,7 @@ function CurrentStatus() {
     <div style={{ display: 'flex' }}>
       <span id="PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard" />
       <span id="PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_64027_module_AQI_conversion_C5_average_10_layer_standard" />
+      <span id="PurpleAirWidget_82995_module_AQI_conversion_C5_average_10_layer_standard" />
     </div>
   );
 }
