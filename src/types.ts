@@ -1,4 +1,10 @@
-export interface ThingSpeakJSON {
+export interface ThingsSpeakEndpoint {
+  name: string;
+  url: string;
+  apiKey: string;
+}
+
+export interface ThingSpeakData {
   channel: Record<string, string>;
   feeds: Record<string, string>[];
 }
@@ -19,4 +25,21 @@ export interface ProcessedPoint {
   relHumidityPerc: number;
   AQI: number;
   tsUTC: string;
+}
+
+export type DataSet = {
+  ourHouse: ProcessedPoint[],
+  neighbor1: ProcessedPoint[],
+  neighbor2: ProcessedPoint[],
+};
+
+export interface DataPoint {
+  tsLocal: string;
+  tsSortable: number;
+  ourHouseTempF?: number;
+  ourHouseRelHumidityPerc?: number;
+  ourHouseAQI?: number;
+  outside1AQI?: number;
+  outside2AQI?: number;
+  outsideAvgAQI?: number;
 }
