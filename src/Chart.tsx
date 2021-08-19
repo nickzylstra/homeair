@@ -11,7 +11,7 @@ function Chart({ data }: { data: DataPoint[] }) {
       <LineChart width={600} height={600} data={data}>
         <Line type="monotone" dataKey="ourHouseAQI" stroke="#8884d8" />
         <Line type="monotone" dataKey="outsideAvgAQI" stroke="#1884d8" />
-        <Line type="monotone" dataKey="ourHouseTempF" stroke="#ccffcc" />
+        <Line type="monotone" dataKey="ourHouseTempF" stroke="#50C878" />
         <Line type="monotone" dataKey="ourHouseRelHumidityPerc" stroke="#ffcc00" />
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
         <XAxis
