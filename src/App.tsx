@@ -14,12 +14,12 @@ const OurHouse: ThingsSpeakEndpoint = {
   apiKey: 'L1C8TB907ZEZE9TJ',
 };
 const Neighbor1: ThingsSpeakEndpoint = {
-  name: 'Neighbor1',
-  url: 'https://api.thingspeak.com/channels/1194602/feeds.json',
-  apiKey: 'UGXESE5LBNFCLG8O',
+  name: 'Morningside',
+  url: 'https://api.thingspeak.com/channels/1432380/feeds.json',
+  apiKey: 'VEOFQGY9ARB33IYR',
 };
 const Neighbor2: ThingsSpeakEndpoint = {
-  name: 'Neighbor2',
+  name: 'Hawthorne Hills West',
   url: 'https://api.thingspeak.com/channels/317289/feeds.json',
   apiKey: 'IYK4R5V4JG2FZA6T',
 };
@@ -118,10 +118,18 @@ function App() {
               AQI Inside (US EPA 2.5 with US EPA CF)
             </td>
             <td>
-              AQI Neighbor 1 Outside (US EPA 2.5 with US EPA CF)
+              AQI
+              {' '}
+              {Neighbor1.name}
+              {' '}
+              Outside (US EPA 2.5 with US EPA CF)
             </td>
             <td>
-              AQI Neighbor 2 Outside (US EPA 2.5 with US EPA CF)
+              AQI
+              {' '}
+              {Neighbor2.name}
+              {' '}
+              Outside (US EPA 2.5 with US EPA CF)
             </td>
           </tr>
         </thead>

@@ -13,7 +13,7 @@ const loadWidgets = () => {
   document.body.appendChild(widgetNeighbor1);
 
   const widgetNeighbor2 = document.createElement('script');
-  widgetNeighbor2.src = 'https://www.purpleair.com/pa.widget.js?key=UGXESE5LBNFCLG8O&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_82995_module_AQI_conversion_C5_average_10_layer_standard';
+  widgetNeighbor2.src = 'https://www.purpleair.com/pa.widget.js?key=VEOFQGY9ARB33IYR&module=AQI&conversion=C5&average=10&layer=standard&container=PurpleAirWidget_111974_module_AQI_conversion_C5_average_10_layer_standard';
   widgetNeighbor2.id = 'PAWidgetScript2';
   document.body.appendChild(widgetNeighbor2);
 };
@@ -26,7 +26,7 @@ function CurrentStatus() {
     <div style={{ display: 'flex' }}>
       <span id="PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard" />
       <span id="PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_82995_module_AQI_conversion_C5_average_10_layer_standard" />
+      <span id="PurpleAirWidget_111974_module_AQI_conversion_C5_average_10_layer_standard" />
     </div>
   );
 }
