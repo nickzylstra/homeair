@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React, { useEffect } from 'react';
+import { Col } from 'react-bootstrap';
 
 const loadWidgets = () => {
   const widgetHome = document.createElement('script');
@@ -23,11 +24,17 @@ function CurrentStatus() {
     loadWidgets();
   }, []);
   return (
-    <div style={{ display: 'flex' }}>
-      <span id="PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard" />
-      <span id="PurpleAirWidget_111974_module_AQI_conversion_C5_average_10_layer_standard" />
-    </div>
+    <>
+      <Col>
+        <span id="PurpleAirWidget_68841_module_AQI_conversion_C5_average_10_layer_standard" />
+      </Col>
+      <Col>
+        <span id="PurpleAirWidget_2856_module_AQI_conversion_C5_average_10_layer_standard" />
+      </Col>
+      <Col>
+        <span id="PurpleAirWidget_111974_module_AQI_conversion_C5_average_10_layer_standard" />
+      </Col>
+    </>
   );
 }
 

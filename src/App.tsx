@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React, { useState, useEffect } from 'react';
+import { Container, Row, Table } from 'react-bootstrap';
 import './App.css';
 import {
   ThingSpeakData, ThingsSpeakEndpoint, DataSet, DataPoint,
@@ -100,73 +101,81 @@ function App() {
 
   return (
     <div className="App">
-      <Chart data={normedDataPoints} />
-      <CurrentStatus />
-      <table>
-        <thead>
-          <tr>
-            <td>
-              Timestamp
-            </td>
-            <td>
-              Temp (F)
-            </td>
-            <td>
-              Humidity (%)
-            </td>
-            <td>
-              AQI Inside (US EPA 2.5 with US EPA CF)
-            </td>
-            <td>
-              AQI
-              {' '}
-              {Neighbor1.name}
-              {' '}
-              Outside (US EPA 2.5 with US EPA CF)
-            </td>
-            <td>
-              AQI
-              {' '}
-              {Neighbor2.name}
-              {' '}
-              Outside (US EPA 2.5 with US EPA CF)
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            recent50Points.map(({
-              tsLocal,
-              ourHouseTempF,
-              ourHouseRelHumidityPerc,
-              ourHouseAQI,
-              outside1AQI,
-              outside2AQI,
-            }) => (
-              <tr key={tsLocal}>
+      <Container fluid>
+        <Row>
+          <Chart data={normedDataPoints} />
+        </Row>
+        <Row>
+          <CurrentStatus />
+        </Row>
+        <Row>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
                 <td>
-                  {tsLocal}
+                  Timestamp
                 </td>
                 <td>
-                  {ourHouseTempF}
+                  Temp (F)
                 </td>
                 <td>
-                  {ourHouseRelHumidityPerc}
+                  Humidity (%)
                 </td>
                 <td>
-                  {ourHouseAQI}
+                  AQI Inside (US EPA 2.5 with US EPA CF)
                 </td>
                 <td>
-                  {outside1AQI}
+                  AQI
+                  {' '}
+                  {Neighbor1.name}
+                  {' '}
+                  Outside (US EPA 2.5 with US EPA CF)
                 </td>
                 <td>
-                  {outside2AQI}
+                  AQI
+                  {' '}
+                  {Neighbor2.name}
+                  {' '}
+                  Outside (US EPA 2.5 with US EPA CF)
                 </td>
               </tr>
-            ))
-          }
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {
+                recent50Points.map(({
+                  tsLocal,
+                  ourHouseTempF,
+                  ourHouseRelHumidityPerc,
+                  ourHouseAQI,
+                  outside1AQI,
+                  outside2AQI,
+                }) => (
+                  <tr key={tsLocal}>
+                    <td>
+                      {tsLocal}
+                    </td>
+                    <td>
+                      {ourHouseTempF}
+                    </td>
+                    <td>
+                      {ourHouseRelHumidityPerc}
+                    </td>
+                    <td>
+                      {ourHouseAQI}
+                    </td>
+                    <td>
+                      {outside1AQI}
+                    </td>
+                    <td>
+                      {outside2AQI}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </Table>
+        </Row>
+      </Container>
     </div>
   );
 }

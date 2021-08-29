@@ -1,14 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React from 'react';
 import {
-  LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend,
+  ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend,
 } from 'recharts';
 import { DataPoint } from './types';
 
 function Chart({ data }: { data: DataPoint[] }) {
   return (
-    <>
-      <LineChart width={600} height={600} data={data}>
+    <ResponsiveContainer width="95%" height={600}>
+      <LineChart data={data}>
         <Line type="monotone" dataKey="ourHouseAQI" stroke="#8884d8" />
         <Line type="monotone" dataKey="outsideAvgAQI" stroke="#1884d8" />
         <Line type="monotone" dataKey="ourHouseTempF" stroke="#50C878" />
@@ -23,7 +23,7 @@ function Chart({ data }: { data: DataPoint[] }) {
         <Legend verticalAlign="top" />
         <Tooltip />
       </LineChart>
-    </>
+    </ResponsiveContainer>
   );
 }
 
