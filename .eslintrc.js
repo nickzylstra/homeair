@@ -1,8 +1,10 @@
 module.exports = {
   extends: [
+    'airbnb',
     'airbnb-typescript',
     'airbnb/hooks',
     'plugin:jest/recommended',
+    'prettier',
   ],
   plugins: ['react', '@typescript-eslint', 'jest'],
   env: {
@@ -19,15 +21,16 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2022,
     sourceType: 'module',
     project: './tsconfig.json',
   },
   rules: {
     // camelcase not supported yet in Airbnb rules
-    "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    '@typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'operator-linebreak': 'off',
   },
 };
