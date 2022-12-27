@@ -1,14 +1,14 @@
+compatibility_date = "2022-12-27"
+
 name = "homeair"
-type = "webpack"
 account_id = "c6a05dacf1861c2fc26e676732f094d1"
+main = "workers-site/index.js"
 
 [site]
 bucket = "./build"
-entry-point = "workers-site"
 
 [env.staging]
 workers_dev = true
 
 [env.production]
 routes = ["homeair.nickzylstra.com/*"]
-zone_id = "138637767aa3d9eaaa39c3d5e2a98faa"
