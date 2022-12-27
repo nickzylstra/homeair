@@ -1,4 +1,4 @@
-import querystring from 'querystring';
+import querystring from 'query-string';
 import { subDays } from 'date-fns';
 import {
   ThingsSpeakEndpoint, ProcessedPoint, ThingSpeakData, ApiPointsToFeed, APIPoints,

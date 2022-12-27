@@ -5,6 +5,7 @@
   "dependencies": {
     "bootstrap": "^5.1.0",
     "date-fns": "^2.16.1",
+    "query-string": "^8.1.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^16.13.1",
