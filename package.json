@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^5.1.0",
+    "bootstrap": "^5.2.3",
     "date-fns": "^2.16.1",
     "query-string": "^8.1.0",
     "react": "^16.13.1",
