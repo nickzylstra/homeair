@@ -2,7 +2,7 @@ compatibility_date = "2022-12-27"
 
 name = "homeair"
 account_id = "c6a05dacf1861c2fc26e676732f094d1"
-main = "workers-site/index.js"
+main = "workers-site/index.ts"
 
 [site]
 bucket = "./build"
