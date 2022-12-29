@@ -1,11 +1,18 @@
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 import React from 'react';
 import {
-  ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
 } from 'recharts';
-import { DataPoint } from './types';
+import { ChartDataPoint } from './types';
 
-function Chart({ data }: { data: DataPoint[] }) {
+function Chart({ data }: { data: ChartDataPoint[] }) {
   return (
     <ResponsiveContainer width="95%" height={600}>
       <LineChart data={data}>

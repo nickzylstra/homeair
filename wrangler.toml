@@ -14,7 +14,7 @@ crons = ["* * * * *"]
 [env.staging]
 workers_dev = true
 kv_namespaces = [
-  { binding = "API_DATA", id = "dae9d7aad79743bebffedf5a4976ae4f", preview_id = "acb98fa51d134b1b8c2dd85c99cced3b" }
+  { binding = "API_DATA", id = "ba223e765c7a49cbba472b75e4155fd9", preview_id = "acb98fa51d134b1b8c2dd85c99cced3b" }
 ]
 # var secrets:
 # - PURPLE_AIR_API_READ_KEY
@@ -23,7 +23,7 @@ kv_namespaces = [
 [env.production]
 routes = ["homeair.nickzylstra.com/*"]
 kv_namespaces = [
-  { binding = "API_DATA", id = "f60392dd17624f36a5207eaf22f17604" }
+  { binding = "API_DATA", id = "8142e14f0efd4b208d9b0a4cd23bfc5b" }
 ]
 # var secrets:
 # - PURPLE_AIR_API_READ_KEY

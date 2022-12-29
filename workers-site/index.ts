@@ -1,6 +1,7 @@
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
-import { createUIDataPoint, processAPIData, processPurpleAirAPIDataPoint } from '../src/utils';
-import { PurpleAirAPISensorDef } from '../src/types';
+import { createUIDataPoint, UIDPToStorage, processPurpleAirAPIDataPoint } from '../src/utils';
+import { UIDataPointStored } from '../src/types';
+import { sensors, KV_SENSOR_HISTORY_KEY, KV_SENSOR_HISTORY_COUNT } from '../src/config';
 //@ts-ignore
 import manifestJSON from '__STATIC_CONTENT_MANIFEST';
 import { PurpleAirGroupMembersData } from '../src/types';
@@ -14,8 +15,6 @@ const assetManifest = JSON.parse(manifestJSON);
  *    than the default 404.html page.
  */
 const DEBUG = false;
-
-const KV_SENSOR_HISTORY_KEY = 'sensor-history-data';
 
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -123,22 +122,6 @@ async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionCont
 const purpleAirExampleResponse =
   '"{"api_version":"V1.0.11-0.0.42","time_stamp":1672286482,"data_time_stamp":1672286460,"group_id":1536,"max_age":604800,"firmware_default_version":"7.02","fields":["sensor_index","last_seen","humidity","temperature","pressure","pm2.5"],"data":[[2856,1672286435,58,57,1008.46,10.0],[159749,1672286459,50,59,1011.67,8.5],[68841,1672286369,31,82,1009.9,11.2],[111974,1672286360,60,56,1012.05,7.0]]}"';
 
-const sensorHome: PurpleAirAPISensorDef = {
-  id: 132144,
-  name: 'home',
-  sensor_index: 68841,
-};
-const sensorNeighbor1: PurpleAirAPISensorDef = {
-  id: 132147,
-  name: 'outside1',
-  sensor_index: 159749,
-};
-const sensorNeighbor2: PurpleAirAPISensorDef = {
-  id: 132145,
-  name: 'outside2',
-  sensor_index: 2856,
-};
-
 async function handleCronTrigger(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
   // get current sensor data
   const purpleAirRes = await fetch(
@@ -152,14 +135,17 @@ async function handleCronTrigger(controller: ScheduledController, env: Env, ctx:
   const purpleAirData = await purpleAirRes.json<PurpleAirGroupMembersData>();
 
   // process current sensor data
-  const sensorHomeDataPoint = processPurpleAirAPIDataPoint(purpleAirData, sensorHome.sensor_index);
+  const sensorHomeDataPoint = processPurpleAirAPIDataPoint(
+    purpleAirData,
+    sensors.home.sensor_index,
+  );
   const sensorNeighbor1DataPoint = processPurpleAirAPIDataPoint(
     purpleAirData,
-    sensorNeighbor1.sensor_index,
+    sensors.outside1.sensor_index,
   );
   const sensorNeighbor2DataPoint = processPurpleAirAPIDataPoint(
     purpleAirData,
-    sensorNeighbor2.sensor_index,
+    sensors.outside2.sensor_index,
   );
   const UIDataPoint = createUIDataPoint(
     sensorHomeDataPoint,
@@ -168,17 +154,28 @@ async function handleCronTrigger(controller: ScheduledController, env: Env, ctx:
   );
   console.log(JSON.stringify(UIDataPoint, null, 2));
 
-  // store current data in dedicated KV key, expiring in 30 days
-  await env.API_DATA.put(`point--${UIDataPoint.tsUTC}`, JSON.stringify(UIDataPoint), {
-    expirationTtl: 60 * 60 * 24 * 30,
+  // store current data in dedicated KV key, expiring in 1 hour
+  const storedUIDataPoint = UIDPToStorage(UIDataPoint);
+  await env.API_DATA.put(`point--${UIDataPoint.tsUTC}`, JSON.stringify(storedUIDataPoint), {
+    expirationTtl: 60 * 60,
   });
 
   // get history data
-  // TODO
+  let history: UIDataPointStored[];
+  const historyString = await env.API_DATA.get(KV_SENSOR_HISTORY_KEY);
+  if (historyString === null) {
+    console.error('history missing, starting from scratch');
+    history = [];
+  } else {
+    history = JSON.parse(historyString);
+  }
 
-  // updated history to remove oldest point, and add current
-  // TODO
+  // update history to remove oldest point, and add current
+  history.push(storedUIDataPoint);
+  if (history.length > KV_SENSOR_HISTORY_COUNT) {
+    history.shift();
+  }
 
   // store history data
-  // TODO
+  await env.API_DATA.put(KV_SENSOR_HISTORY_KEY, JSON.stringify(history));
 }

@@ -1,15 +1,9 @@
-import querystring from 'query-string';
-import { subDays } from 'date-fns';
 import {
-  ThingsSpeakEndpoint,
-  ProcessedPoint,
-  ThingSpeakData,
-  ApiPointsToFeed,
-  APIPoints,
   PurpleAirGroupMembersData,
   PurpleAirAPIFieldsToData as PurpleAirAPIFieldsToDataIdx,
   PurpleAirAPIPoints,
   UIDataPoint,
+  UIDataPointStored,
   ProcessedPurpleAirPoint,
 } from './types';
 
@@ -67,49 +61,6 @@ export function convertPM25toAQI(PM25: number, RH: number) {
 
 export function correctTemp(tempF: number) {
   return Math.round(10 * (tempF - 10.2)) / 10;
-}
-
-export function getAPIStart(date?: Date, daysSpan = 5) {
-  return subDays(date ?? new Date(), daysSpan)
-    .toISOString()
-    .replace('T', ' ')
-    .slice(0, -5);
-}
-
-export function getFullAPIEndpoint(e: ThingsSpeakEndpoint): string {
-  const APIQuery = {
-    api_key: e.apiKey,
-    start: getAPIStart(),
-    offset: 0,
-    round: 2,
-    average: 10,
-  };
-  return `${e.url}?${querystring.stringify({ ...APIQuery, api_key: e.apiKey })}`;
-}
-
-export function processAPIData(d: ThingSpeakData): ProcessedPoint[] {
-  const { channel, feeds } = d;
-
-  const apiPointsToFeed = Object.entries(channel).reduce<ApiPointsToFeed>((map, [k, v]) => {
-    const updatedMap = { ...map };
-    Object.entries(APIPoints).forEach(([_, point]) => {
-      if (point === v) {
-        updatedMap[point] = k;
-      }
-    });
-    return updatedMap;
-  }, {} as ApiPointsToFeed);
-
-  return feeds.map((point) => {
-    const RH = parseFloat(point[apiPointsToFeed[APIPoints.REL_HUMIDITY]]);
-    const rawPM25 = parseFloat(point[apiPointsToFeed[APIPoints.PM25]]);
-    return {
-      tempF: correctTemp(parseFloat(point[apiPointsToFeed[APIPoints.TEMP_F]])),
-      relHumidityPerc: RH,
-      AQI: convertPM25toAQI(rawPM25, RH),
-      tsUTC: point.created_at,
-    };
-  });
 }
 
 export function processPurpleAirAPIDataPoint(
@@ -184,4 +135,29 @@ export function createUIDataPoint(
   }
 
   return dp;
+}
+
+export function UIDPToStorage(p: UIDataPoint): UIDataPointStored {
+  return [
+    p.tsSortable,
+    p.ourHouseTempF ?? null,
+    p.ourHouseRelHumidityPerc ?? null,
+    p.ourHouseAQI ?? null,
+    p.outside1AQI ?? null,
+    p.outside2AQI ?? null,
+    p.outsideAvgAQI ?? null,
+  ];
+}
+
+export function UIDPFromStorage(p: UIDataPointStored): UIDataPoint {
+  return {
+    tsUTC: genHumanUTCString(p[0]),
+    tsSortable: p[0],
+    ourHouseTempF: p[1] ?? undefined,
+    ourHouseRelHumidityPerc: p[2] ?? undefined,
+    ourHouseAQI: p[3] ?? undefined,
+    outside1AQI: p[4] ?? undefined,
+    outside2AQI: p[5] ?? undefined,
+    outsideAvgAQI: p[6] ?? undefined,
+  };
 }
