@@ -1,10 +1,13 @@
+/* eslint-disable import/no-relative-packages */
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
-import { createUIDataPoint, UIDPToStorage, processPurpleAirAPIDataPoint } from '../src/utils';
-import { UIDataPointStored } from '../src/types';
-import { sensors, KV_SENSOR_HISTORY_KEY, KV_SENSOR_HISTORY_COUNT } from '../src/config';
-//@ts-ignore
+// @ts-ignore
 import manifestJSON from '__STATIC_CONTENT_MANIFEST';
-import { PurpleAirGroupMembersData } from '../src/types';
+import { createUIDataPoint, UIDPToStorage, processPurpleAirAPIDataPoint } from '../src/utils';
+import { sensors, KV_SENSOR_HISTORY_KEY, KV_SENSOR_HISTORY_COUNT } from '../src/config';
+import { PurpleAirGroupMembersData, UIDataPointStored } from '../src/types';
+
 const assetManifest = JSON.parse(manifestJSON);
 
 /**
@@ -36,7 +39,7 @@ export default {
     try {
       const url = new URL(request.url);
       if (url.pathname.startsWith('/api')) {
-        return await handleAPIRequest(request, env, ctx);
+        return await handleAPIRequest(request, env);
       }
       return await handleAssetRequest(request, env, ctx);
     } catch (e: any) {
@@ -49,11 +52,11 @@ export default {
     }
   },
   async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(handleCronTrigger(controller, env, ctx));
+    ctx.waitUntil(handleCronTrigger(controller, env));
   },
 };
 
-async function handleAPIRequest(request: Request, env: Env, ctx: ExecutionContext) {
+async function handleAPIRequest(request: Request, env: Env) {
   const url = new URL(request.url);
 
   if (!url.pathname.startsWith(`/api/${KV_SENSOR_HISTORY_KEY}`))
@@ -72,7 +75,6 @@ async function handleAPIRequest(request: Request, env: Env, ctx: ExecutionContex
 }
 
 async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionContext) {
-  const url = new URL(request.url);
   try {
     return await getAssetFromKV(
       {
@@ -82,6 +84,7 @@ async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionCont
         },
       },
       {
+        // eslint-disable-next-line no-underscore-dangle
         ASSET_NAMESPACE: env.__STATIC_CONTENT,
         ASSET_MANIFEST: assetManifest,
         cacheControl: {
@@ -93,7 +96,7 @@ async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionCont
     // if an error is thrown try to serve the asset at 404.html
     if (!DEBUG) {
       try {
-        let notFoundResponse = await getAssetFromKV(
+        const notFoundResponse = await getAssetFromKV(
           {
             request,
             waitUntil(promise) {
@@ -109,7 +112,9 @@ async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionCont
           ...notFoundResponse,
           status: 404,
         });
-      } catch (e: any) {}
+      } catch (error: any) {
+        console.error(error);
+      }
     }
 
     return new Response(e.message || e.toString(), { status: 500 });
@@ -119,10 +124,11 @@ async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionCont
 // https://api.purpleair.com/#api-groups-get-members-data
 // GET https://api.purpleair.com/v1/groups/1536/members?fields=pm2.5%2Ctemperature%2Chumidity%2Cpressure%2Clast_seen
 // X-API-Key: <read-key>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const purpleAirExampleResponse =
   '"{"api_version":"V1.0.11-0.0.42","time_stamp":1672286482,"data_time_stamp":1672286460,"group_id":1536,"max_age":604800,"firmware_default_version":"7.02","fields":["sensor_index","last_seen","humidity","temperature","pressure","pm2.5"],"data":[[2856,1672286435,58,57,1008.46,10.0],[159749,1672286459,50,59,1011.67,8.5],[68841,1672286369,31,82,1009.9,11.2],[111974,1672286360,60,56,1012.05,7.0]]}"';
 
-async function handleCronTrigger(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+async function handleCronTrigger(controller: ScheduledController, env: Env) {
   // get current sensor data
   const purpleAirRes = await fetch(
     'https://api.purpleair.com/v1/groups/1536/members?fields=pm2.5%2Ctemperature%2Chumidity%2Cpressure%2Clast_seen',

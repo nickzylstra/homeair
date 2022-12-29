@@ -1,12 +1,6 @@
 module.exports = {
-  extends: [
-    'airbnb',
-    'airbnb-typescript',
-    'airbnb/hooks',
-    'plugin:jest/recommended',
-    'prettier',
-  ],
-  plugins: ['react', '@typescript-eslint', 'jest'],
+  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks', 'plugin:jest/recommended', 'prettier'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint', 'jest'],
   env: {
     browser: true,
     es6: true,
@@ -32,5 +26,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'operator-linebreak': 'off',
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
   },
 };
