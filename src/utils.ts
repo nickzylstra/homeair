@@ -6,6 +6,7 @@ import {
   UIDataPointStored,
   ProcessedPurpleAirPoint,
 } from './types';
+import { sensors } from './config';
 
 // USA EPA AQI Conversion for recommended for wildfire smoke
 // https://www.purpleair.com/map?opt=1/i/mAQI/a10/cC5#11.25/37.8076/-122.3897
@@ -59,8 +60,22 @@ export function convertPM25toAQI(PM25: number, RH: number) {
   return PM25toAQI(PurpleAirPM25toUSEPAPM25(PM25, RH));
 }
 
-export function correctTemp(tempF: number) {
-  return Math.round(10 * (tempF - 10.2)) / 10;
+// https://api.purpleair.com/#api-sensors-get-sensor-data
+export function correctInsideTemp(tempF: number) {
+  return Math.round(10 * (tempF - 11)) / 10;
+}
+export function correctOutsideTemp(tempF: number) {
+  return Math.round(10 * (tempF - 8)) / 10;
+}
+export function correctTemp(tempF: number, sensorIndex: number) {
+  if (sensorIndex === sensors.home.sensor_index) {
+    return correctInsideTemp(tempF);
+  }
+  return correctOutsideTemp(tempF);
+}
+// https://api.purpleair.com/#api-sensors-get-sensor-data
+export function correctHumidity(h: number) {
+  return Math.round(10 * (h + 4)) / 10;
 }
 
 export function processPurpleAirAPIDataPoint(
@@ -84,12 +99,13 @@ export function processPurpleAirAPIDataPoint(
   );
 
   const point = data[apiDataSensorIdx];
-  const RH = point[apiPointsToFeed[PurpleAirAPIPoints.REL_HUMIDITY]];
+  const RH = correctHumidity(point[apiPointsToFeed[PurpleAirAPIPoints.REL_HUMIDITY]]);
   const rawPM25 = point[apiPointsToFeed[PurpleAirAPIPoints.PM25]];
+
   return {
     sensorIndex: sensorIdx,
     tsUnixUTC: point[apiPointsToFeed[PurpleAirAPIPoints.UNIX_TS]],
-    tempF: correctTemp(point[apiPointsToFeed[PurpleAirAPIPoints.TEMP_F]]),
+    tempF: correctTemp(point[apiPointsToFeed[PurpleAirAPIPoints.TEMP_F]], sensorIdx),
     relHumidityPerc: RH,
     AQI: convertPM25toAQI(rawPM25, RH),
   };
