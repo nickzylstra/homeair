@@ -110,7 +110,7 @@ export function createUIDataPoint(
     tsSortable: tsNowUTC,
   };
 
-  // sensors are supposted report in to PurpleAir servers every 2 minutes
+  // sensors are supposed report in to PurpleAir servers every 2 minutes
   const tsCutoffSeconds = 60 * 3;
 
   const isHomeValid = tsNowUTC - home.tsUnixUTC < tsCutoffSeconds;
@@ -123,11 +123,13 @@ export function createUIDataPoint(
   const isOut1Valid = tsNowUTC - out1.tsUnixUTC < tsCutoffSeconds;
   if (isOut1Valid) {
     dp.outside1AQI = out1.AQI;
+    dp.outsideAvgAQI = out1.AQI;
   }
 
   const isOut2Valid = tsNowUTC - out2.tsUnixUTC < tsCutoffSeconds;
   if (isOut2Valid) {
     dp.outside2AQI = out2.AQI;
+    dp.outsideAvgAQI = out2.AQI;
   }
 
   if (isOut1Valid && isOut2Valid) {
