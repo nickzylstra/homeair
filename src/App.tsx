@@ -27,6 +27,7 @@ function App() {
       });
       setHistory(APIhistory);
     }
+    fetchAPIData();
     let timer: NodeJS.Timeout;
     function tick() {
       if (document.hasFocus()) {
@@ -38,7 +39,9 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const recentPoints = history.slice(0, 60).sort((a, b) => b.tsSortable - a.tsSortable);
+  const recentPoints = history
+    .slice(history.length - 60, history.length)
+    .sort((a, b) => b.tsSortable - a.tsSortable);
 
   return (
     <div className="App">
