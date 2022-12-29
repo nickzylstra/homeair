@@ -7,14 +7,23 @@ main = "workers-site/index.ts"
 [site]
 bucket = "./build"
 
+[triggers]
+crons = ["* * * * *"]
+
+
 [env.staging]
 workers_dev = true
 kv_namespaces = [
-  { binding = "API_DATA", id = "dae9d7aad79743bebffedf5a4976ae4f" }
+  { binding = "API_DATA", id = "dae9d7aad79743bebffedf5a4976ae4f", preview_id = "acb98fa51d134b1b8c2dd85c99cced3b" }
 ]
+# var secrets:
+# - PURPLE_AIR_API_READ_KEY
+
 
 [env.production]
 routes = ["homeair.nickzylstra.com/*"]
 kv_namespaces = [
   { binding = "API_DATA", id = "f60392dd17624f36a5207eaf22f17604" }
 ]
+# var secrets:
+# - PURPLE_AIR_API_READ_KEY

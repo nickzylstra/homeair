@@ -28,9 +28,9 @@ export interface ProcessedPoint {
 }
 
 export type DataSet = {
-  ourHouse: ProcessedPoint[],
-  neighbor1: ProcessedPoint[],
-  neighbor2: ProcessedPoint[],
+  ourHouse: ProcessedPoint[];
+  neighbor1: ProcessedPoint[];
+  neighbor2: ProcessedPoint[];
 };
 
 export interface DataPoint {
@@ -43,3 +43,44 @@ export interface DataPoint {
   outside2AQI?: number;
   outsideAvgAQI?: number;
 }
+
+export type PurpleAirAPISensorDef = {
+  id: number;
+  name: string;
+  sensor_index: number;
+};
+
+export type PurpleAirGroupMembersData = {
+  fields: string[];
+  data: number[][];
+};
+
+export enum PurpleAirAPIPoints {
+  SENSOR_IDX = 'sensor_index',
+  UNIX_TS = 'last_seen',
+  TEMP_F = 'temperature',
+  REL_HUMIDITY = 'humidity',
+  PM25 = 'pm2.5',
+  PRESSURE = 'pressure',
+}
+
+export type PurpleAirAPIFieldsToData = Record<PurpleAirAPIPoints, number>;
+
+export type ProcessedPurpleAirPoint = {
+  sensorIndex: number;
+  tempF: number;
+  relHumidityPerc: number;
+  AQI: number;
+  tsUnixUTC: number;
+};
+
+export type UIDataPoint = {
+  tsUTC: string;
+  tsSortable: number;
+  ourHouseTempF?: number;
+  ourHouseRelHumidityPerc?: number;
+  ourHouseAQI?: number;
+  outside1AQI?: number;
+  outside2AQI?: number;
+  outsideAvgAQI?: number;
+};

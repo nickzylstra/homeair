@@ -1,7 +1,16 @@
 import querystring from 'query-string';
 import { subDays } from 'date-fns';
 import {
-  ThingsSpeakEndpoint, ProcessedPoint, ThingSpeakData, ApiPointsToFeed, APIPoints,
+  ThingsSpeakEndpoint,
+  ProcessedPoint,
+  ThingSpeakData,
+  ApiPointsToFeed,
+  APIPoints,
+  PurpleAirGroupMembersData,
+  PurpleAirAPIFieldsToData as PurpleAirAPIFieldsToDataIdx,
+  PurpleAirAPIPoints,
+  UIDataPoint,
+  ProcessedPurpleAirPoint,
 } from './types';
 
 // USA EPA AQI Conversion for recommended for wildfire smoke
@@ -26,7 +35,7 @@ function PM25toAQI(PM25: number) {
     return Math.round(AQI);
   }
 
-  const c = (Math.floor(10 * PM25)) / 10;
+  const c = Math.floor(10 * PM25) / 10;
   if (c >= 0 && c < 12.1) {
     return Linear(50, 0, 12, 0, c);
   }
@@ -91,15 +100,88 @@ export function processAPIData(d: ThingSpeakData): ProcessedPoint[] {
     return updatedMap;
   }, {} as ApiPointsToFeed);
 
-  return feeds
-    .map((point) => {
-      const RH = parseFloat(point[apiPointsToFeed[APIPoints.REL_HUMIDITY]]);
-      const rawPM25 = parseFloat(point[apiPointsToFeed[APIPoints.PM25]]);
-      return {
-        tempF: correctTemp(parseFloat(point[apiPointsToFeed[APIPoints.TEMP_F]])),
-        relHumidityPerc: RH,
-        AQI: convertPM25toAQI(rawPM25, RH),
-        tsUTC: point.created_at,
-      };
+  return feeds.map((point) => {
+    const RH = parseFloat(point[apiPointsToFeed[APIPoints.REL_HUMIDITY]]);
+    const rawPM25 = parseFloat(point[apiPointsToFeed[APIPoints.PM25]]);
+    return {
+      tempF: correctTemp(parseFloat(point[apiPointsToFeed[APIPoints.TEMP_F]])),
+      relHumidityPerc: RH,
+      AQI: convertPM25toAQI(rawPM25, RH),
+      tsUTC: point.created_at,
+    };
+  });
+}
+
+export function processPurpleAirAPIDataPoint(
+  purpleAirData: PurpleAirGroupMembersData,
+  sensorIdx: number,
+): ProcessedPurpleAirPoint {
+  const { fields, data } = purpleAirData;
+
+  const apiPointsToFeed = fields.reduce<PurpleAirAPIFieldsToDataIdx>((map, key, idx) => {
+    const updatedMap = { ...map };
+    Object.entries(PurpleAirAPIPoints).forEach(([_, point]) => {
+      if (point === key) {
+        updatedMap[point] = idx;
+      }
     });
+    return updatedMap;
+  }, {} as PurpleAirAPIFieldsToDataIdx);
+
+  const apiDataSensorIdx = data.findIndex(
+    (d) => d[apiPointsToFeed[PurpleAirAPIPoints.SENSOR_IDX]] === sensorIdx,
+  );
+
+  const point = data[apiDataSensorIdx];
+  const RH = point[apiPointsToFeed[PurpleAirAPIPoints.REL_HUMIDITY]];
+  const rawPM25 = point[apiPointsToFeed[PurpleAirAPIPoints.PM25]];
+  return {
+    sensorIndex: sensorIdx,
+    tsUnixUTC: point[apiPointsToFeed[PurpleAirAPIPoints.UNIX_TS]],
+    tempF: correctTemp(point[apiPointsToFeed[PurpleAirAPIPoints.TEMP_F]]),
+    relHumidityPerc: RH,
+    AQI: convertPM25toAQI(rawPM25, RH),
+  };
+}
+
+export function genHumanUTCString(unixSeconds: number): string {
+  return new Date(unixSeconds * 1000).toISOString();
+}
+
+export function createUIDataPoint(
+  home: ProcessedPurpleAirPoint,
+  out1: ProcessedPurpleAirPoint,
+  out2: ProcessedPurpleAirPoint,
+): UIDataPoint {
+  const tsNowUTC = Math.floor(Date.now() / 1000);
+  const dp: UIDataPoint = {
+    tsUTC: genHumanUTCString(tsNowUTC),
+    tsSortable: tsNowUTC,
+  };
+
+  // sensors are supposted report in to PurpleAir servers every 2 minutes
+  const tsCutoffSeconds = 60 * 3;
+
+  const isHomeValid = tsNowUTC - home.tsUnixUTC < tsCutoffSeconds;
+  if (isHomeValid) {
+    dp.ourHouseAQI = home.AQI;
+    dp.ourHouseRelHumidityPerc = home.relHumidityPerc;
+    dp.ourHouseTempF = home.tempF;
+  }
+
+  const isOut1Valid = tsNowUTC - out1.tsUnixUTC < tsCutoffSeconds;
+  if (isOut1Valid) {
+    dp.outside1AQI = out1.AQI;
+  }
+
+  const isOut2Valid = tsNowUTC - out2.tsUnixUTC < tsCutoffSeconds;
+  if (isOut2Valid) {
+    dp.outside2AQI = out2.AQI;
+  }
+
+  if (isOut1Valid && isOut2Valid) {
+    dp.outsideAvgAQI = (out1.AQI + out2.AQI) / 2;
+  }
+
+  return dp;
 }

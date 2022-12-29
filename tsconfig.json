@@ -16,6 +16,5 @@
     "noEmit": true,
     "jsx": "react",
     "types": ["@cloudflare/workers-types", "jest"]
-  },
-  "include": ["src", "workers-site"]
+  }
 }
