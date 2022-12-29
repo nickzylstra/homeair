@@ -27,7 +27,15 @@ function App() {
       });
       setHistory(APIhistory);
     }
-    fetchAPIData();
+    let timer: NodeJS.Timeout;
+    function tick() {
+      if (document.hasFocus()) {
+        fetchAPIData();
+      }
+      timer = setTimeout(tick, 1000 * 15);
+    }
+    tick();
+    return () => clearTimeout(timer);
   }, []);
 
   const recentPoints = history.slice(0, 60).sort((a, b) => b.tsSortable - a.tsSortable);
