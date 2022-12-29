@@ -12,11 +12,13 @@ const assetManifest = JSON.parse(manifestJSON);
  */
 const DEBUG = false;
 
+const KV_SENSOR_DATA_KEY = 'sensor-data';
+
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
   // MY_KV_NAMESPACE: KVNamespace;
   __STATIC_CONTENT: KVNamespace;
-  API_CACHE: KVNamespace;
+  API_DATA: KVNamespace;
   //
   // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
   // MY_DURABLE_OBJECT: DurableObjectNamespace;
@@ -47,29 +49,19 @@ export default {
 async function handleAPIRequest(request: Request, env: Env, ctx: ExecutionContext) {
   const url = new URL(request.url);
 
-  const sensorDataKey = 'sensor-data';
-
-  if (!url.pathname.startsWith(`/api/${sensorDataKey}`))
+  if (!url.pathname.startsWith(`/api/${KV_SENSOR_DATA_KEY}`))
     return new Response(`No API endpoint found for ${url.pathname}`, {
       status: 404,
     });
 
-  // get data from kv if exists (not expired)
-  const sensorData = await env.API_CACHE.get(sensorDataKey);
-  if (sensorData !== null) {
-    return new Response(sensorData, {
-      headers: { 'content-type': 'application/json' },
-    });
+  const sensorData = await env.API_DATA.get(KV_SENSOR_DATA_KEY);
+  if (sensorData === null) {
+    return new Response('no data found', { status: 404 });
   }
 
-  console.log(`api kv cache miss for ${sensorDataKey}`);
-  // TODO get data from purple air using API key stored as env var
-  const purpleAirData = JSON.stringify({ data: 'pa-data' });
-  await env.API_CACHE.put(sensorDataKey, purpleAirData, {
-    expirationTtl: 60,
+  return new Response(sensorData, {
+    headers: { 'content-type': 'application/json' },
   });
-
-  return new Response(purpleAirData, { headers: { 'content-type': 'application/json' } });
 }
 
 async function handleAssetRequest(request: Request, env: Env, ctx: ExecutionContext) {

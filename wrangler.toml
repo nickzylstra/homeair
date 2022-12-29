@@ -10,11 +10,11 @@ bucket = "./build"
 [env.staging]
 workers_dev = true
 kv_namespaces = [
-  { binding = "API_CACHE", id = "dae9d7aad79743bebffedf5a4976ae4f" }
+  { binding = "API_DATA", id = "dae9d7aad79743bebffedf5a4976ae4f" }
 ]
 
 [env.production]
 routes = ["homeair.nickzylstra.com/*"]
 kv_namespaces = [
-  { binding = "API_CACHE", id = "f60392dd17624f36a5207eaf22f17604" }
+  { binding = "API_DATA", id = "f60392dd17624f36a5207eaf22f17604" }
 ]
