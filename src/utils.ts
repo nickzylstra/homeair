@@ -31,6 +31,13 @@ function PM25toAQI(PM25: number) {
   }
 
   const c = Math.floor(10 * PM25) / 10;
+  // The PA sensors may report a slightly negative number when it's raining
+  if (c < -1) {
+    throw new Error(`unexpected PM25 value of ${c}`);
+  }
+  if (c >= -1 && c < 0) {
+    return 0;
+  }
   if (c >= 0 && c < 12.1) {
     return Linear(50, 0, 12, 0, c);
   }
