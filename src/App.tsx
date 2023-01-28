@@ -57,8 +57,9 @@ function App() {
             <thead>
               <tr>
                 <td>Timestamp</td>
-                <td>Temp (F)</td>
-                <td>Humidity (%)</td>
+                <td>Temp Avg Outside (F)</td>
+                <td>Temp Inside (F)</td>
+                <td>Humidity Inside (%)</td>
                 <td>AQI Inside (US EPA 2.5 with US EPA CF)</td>
                 <td>AQI {sensors.outside1.name} Outside (US EPA 2.5 with US EPA CF)</td>
                 <td>AQI {sensors.outside2.name} Outside (US EPA 2.5 with US EPA CF)</td>
@@ -68,6 +69,7 @@ function App() {
               {recentPoints.map(
                 ({
                   tsLocal,
+                  outsideAvgTempF,
                   ourHouseTempF,
                   ourHouseRelHumidityPerc,
                   ourHouseAQI,
@@ -76,6 +78,7 @@ function App() {
                 }) => (
                   <tr key={tsLocal}>
                     <td>{tsLocal}</td>
+                    <td>{outsideAvgTempF}</td>
                     <td>{ourHouseTempF}</td>
                     <td>{ourHouseRelHumidityPerc}</td>
                     <td>{ourHouseAQI}</td>

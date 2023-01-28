@@ -36,6 +36,7 @@ function averageData(data: ChartDataPoint[]): ChartDataPoint[] {
         outside1AQI: [],
         outside2AQI: [],
         outsideAvgAQI: [],
+        outsideAvgTempF: [],
       };
       tempPoints.forEach((tp) => {
         Object.entries(tp).forEach(([k, v]) => {
@@ -51,6 +52,7 @@ function averageData(data: ChartDataPoint[]): ChartDataPoint[] {
       atp.outside1AQI = averageArr(intervalPoints.outside1AQI ?? []);
       atp.outside2AQI = averageArr(intervalPoints.outside2AQI ?? []);
       atp.outsideAvgAQI = averageArr(intervalPoints.outsideAvgAQI ?? []);
+      atp.outsideAvgTempF = averageArr(intervalPoints.outsideAvgTempF ?? []);
 
       averagedData.push(atp);
       tempPoints = [];
@@ -65,8 +67,9 @@ function Chart({ data }: { data: ChartDataPoint[] }) {
   return (
     <ResponsiveContainer width="95%" height={600}>
       <LineChart data={averagedData}>
-        <Line type="monotone" dataKey="ourHouseAQI" stroke="#8884d8" />
+        <Line type="monotone" dataKey="outsideAvgTempF" stroke="#FF4F00" />
         <Line type="monotone" dataKey="outsideAvgAQI" stroke="#1884d8" />
+        <Line type="monotone" dataKey="ourHouseAQI" stroke="#8884d8" />
         <Line type="monotone" dataKey="ourHouseTempF" stroke="#50C878" />
         <Line type="monotone" dataKey="ourHouseRelHumidityPerc" stroke="#ffcc00" />
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />

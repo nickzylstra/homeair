@@ -147,16 +147,19 @@ export function createUIDataPoint(
   if (isOut1Valid) {
     dp.outside1AQI = out1.AQI;
     dp.outsideAvgAQI = out1.AQI;
+    dp.outsideAvgTempF = out1.tempF;
   }
 
   const isOut2Valid = tsNowUTC - out2.tsUnixUTC < tsCutoffSeconds;
   if (isOut2Valid) {
     dp.outside2AQI = out2.AQI;
     dp.outsideAvgAQI = out2.AQI;
+    dp.outsideAvgTempF = out2.tempF;
   }
 
   if (isOut1Valid && isOut2Valid) {
     dp.outsideAvgAQI = (out1.AQI + out2.AQI) / 2;
+    dp.outsideAvgTempF = Math.round((out1.tempF + out2.tempF) / 2);
   }
 
   return dp;
@@ -171,6 +174,7 @@ export function UIDPToStorage(p: UIDataPoint): UIDataPointStored {
     p.outside1AQI ?? null,
     p.outside2AQI ?? null,
     p.outsideAvgAQI ?? null,
+    p.outsideAvgTempF ?? null,
   ];
 }
 
@@ -184,5 +188,6 @@ export function UIDPFromStorage(p: UIDataPointStored): UIDataPoint {
     outside1AQI: p[4] ?? undefined,
     outside2AQI: p[5] ?? undefined,
     outsideAvgAQI: p[6] ?? undefined,
+    outsideAvgTempF: p[7] ?? undefined,
   };
 }

@@ -39,6 +39,7 @@ export type UIDataPoint = {
   outside1AQI?: number;
   outside2AQI?: number;
   outsideAvgAQI?: number;
+  outsideAvgTempF?: number;
 };
 
 export type UIDataPointStored = [
@@ -49,6 +50,7 @@ export type UIDataPointStored = [
   Required<UIDataPoint>['outside1AQI'] | null,
   Required<UIDataPoint>['outside2AQI'] | null,
   Required<UIDataPoint>['outsideAvgAQI'] | null,
+  Required<UIDataPoint>['outsideAvgTempF'] | null,
 ];
 
 export interface ChartDataPoint extends UIDataPoint {
